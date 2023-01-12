@@ -15,7 +15,7 @@ from app.usecases import validation
 router = APIRouter()
 
 
-@router.get("/rank", response_model=Success[RankHistory])
+@router.get("/profile-history/rank", response_model=Success[RankHistory])
 async def get_profile_rank_history(
     user_id: int,
     mode: int,

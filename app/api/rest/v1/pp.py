@@ -15,7 +15,7 @@ from app.usecases import validation
 router = APIRouter()
 
 
-@router.get("/pp", response_model=Success[PPHistory])
+@router.get("/profile-history/pp", response_model=Success[PPHistory])
 async def get_profile_pp_history(
     user_id: int,
     mode: int,

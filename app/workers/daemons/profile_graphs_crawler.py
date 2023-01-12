@@ -1,13 +1,15 @@
 #!/usr/bin/env python3.10
 # To run it you need to:
-# `cd path/to/profile-history-service && python -m app.workers.daemons.crawler`
+# `cd path/to/profile-history-service && venv/bin/python -m app.workers.daemons.profile_graphs_crawler`
 from __future__ import annotations
 
 import asyncio
 import datetime
-import time
+from timeit import default_timer as timer
 from typing import Any
 from typing import Mapping
+
+from shared_modules import logger
 
 from app.common import settings
 from app.services import database
@@ -156,11 +158,16 @@ async def async_main() -> int:
     )
     await db.connect()
 
+    start = timer()
     users = await db.fetch_all(
         "SELECT id, privileges, country FROM users",
     )
     for user in users:
         await gather_profile_history(user)
+
+    end = timer()
+
+    logger.info(f"[profile_graphs_crawler:cron] Time taken: {end - start:.2f}s")
 
     await db.disconnect()
     await redis.close()
