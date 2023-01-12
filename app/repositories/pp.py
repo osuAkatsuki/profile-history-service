@@ -26,7 +26,7 @@ class PPRepo:
             SELECT {self.READ_PARAMS}
               FROM `user_profile_history`
              WHERE `user_id` = :user_id AND `mode` = :mode AND NOT `pp` IS NULL
-             ORDER BY `captured_at` 
+             ORDER BY `captured_at`
              DESC LIMIT :limit
         """
         params = {
