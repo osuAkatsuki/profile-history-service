@@ -9,20 +9,19 @@ import time
 from typing import Any
 from typing import Mapping
 
-import aioredis
-
 from app.common import settings
 from app.services import database
+from app.services import redis as redis_service
 
 redis_map = {
     0: ("leaderboard", "std"),
     1: ("leaderboard", "taiko"),
     2: ("leaderboard", "ctb"),
     3: ("leaderboard", "mania"),
-    4: ("relaxboard", "std"),
-    5: ("relaxboard", "taiko"),
-    6: ("relaxboard", "ctb"),
-    7: ("autoboard", "std"),
+    4: ("leaderboard_relax", "std"),
+    5: ("leaderboard_relax", "taiko"),
+    6: ("leaderboard_relax", "ctb"),
+    7: ("leaderboard_ap", "std"),
 }
 
 db_map = {
@@ -97,19 +96,11 @@ async def gather_profile_history(user: Mapping[str, Any]) -> None:
     user_id = user["id"]
     privileges = user["privileges"]
 
-    start_time = int(time.time())
-
     for mode in range(8):
-        (db_table, mode_name) = db_map[mode]
-        latest_pp_awarded = await db.fetch_val(
-            f"SELECT latest_pp_awarded_{mode_name} FROM {db_table} WHERE id = :user_id",
-            {"user_id": user_id},
-        )
-        inactive_days = (start_time - latest_pp_awarded) / 60 / 60 / 24
 
-        if inactive_days > 60 or not privileges & 1:
+        if not privileges & 1:
             ranks = await db.fetch_one(
-                "SELECT `rank`, `country_rank`  FROM `user_profile_history` WHERE `user_id` = :user_id AND `mode` = :mode ORDER BY `captured_at` DESC LIMIT 1",
+                "SELECT `rank`, `country_rank` FROM `user_profile_history` WHERE `user_id` = :user_id AND `mode` = :mode ORDER BY `captured_at` DESC LIMIT 1",
                 {"user_id": user_id, "mode": mode},
             )
             if not ranks:
@@ -142,9 +133,11 @@ async def gather_profile_history(user: Mapping[str, Any]) -> None:
 async def async_main() -> int:
     global redis, db
 
-    redis = await aioredis.from_url(
-        f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
+    redis = await redis_service.ServiceRedis(
+        host=settings.REDIS_HOST,
+        port=settings.REDIS_PORT,
     )
+    await redis.initialize()
     db = database.Database(
         read_dsn="mysql+asyncmy://{username}:{password}@{host}:{port}/{db}".format(
             username=settings.READ_DB_USER,
@@ -164,11 +157,13 @@ async def async_main() -> int:
     await db.connect()
 
     users = await db.fetch_all(
-        "SELECT u.id, u.privileges, s.country FROM users u INNER JOIN users_stats s ON u.id = s.id",
+        "SELECT id, privileges, country FROM users",
     )
-    await asyncio.gather(*[gather_profile_history(user) for user in users])
+    for user in users:
+        await gather_profile_history(user)
 
     await db.disconnect()
+    await redis.close()
     return 0
 
 

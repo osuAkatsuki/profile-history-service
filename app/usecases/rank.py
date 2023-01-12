@@ -12,10 +12,10 @@ mode_map = {
     1: ("leaderboard", "taiko"),
     2: ("leaderboard", "ctb"),
     3: ("leaderboard", "mania"),
-    4: ("relaxboard", "std"),
-    5: ("relaxboard", "taiko"),
-    6: ("relaxboard", "ctb"),
-    7: ("autoboard", "std"),
+    4: ("leaderboard_relax", "std"),
+    5: ("leaderboard_relax", "taiko"),
+    6: ("leaderboard_relax", "ctb"),
+    7: ("leaderboard_ap", "std"),
 }
 
 
@@ -27,6 +27,8 @@ async def fetch_many(
 ) -> RankHistory:
     r_repo = RanksRepo(ctx)
     resp = await r_repo.fetch_many(user_id, mode, limit)
+
+    resp = resp[::-1]  # swap it so its in right order.
 
     data_structure = {
         "user_id": user_id,

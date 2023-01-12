@@ -22,7 +22,7 @@ async def get_profile_pp_history(
     ctx: RequestContext = Depends(),
 ):
     data = await pp.fetch_many(ctx, user_id, mode)
-    user_data = await user.fetch_one(ctx, user_id, mode)
+    user_data = await user.fetch_one(ctx, user_id)
 
     if isinstance(user_data, ServiceError):
         return responses.failure(
@@ -35,13 +35,6 @@ async def get_profile_pp_history(
         return responses.failure(
             ServiceError.USERS_IS_RESTRICTED,
             "User is restricted.",
-            status_code=200,
-        )
-
-    if validation.is_not_active(user_data.latest_pp_awarded):
-        return responses.failure(
-            ServiceError.USERS_IS_NOT_ACTIVE,
-            "User is not active.",
             status_code=200,
         )
 
