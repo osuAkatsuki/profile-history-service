@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import asyncio
 import datetime
+import time
 from timeit import default_timer as timer
 from typing import Any
 from typing import Mapping
@@ -98,9 +99,12 @@ async def gather_profile_history(user: Mapping[str, Any]) -> None:
     user_id = user["id"]
     privileges = user["privileges"]
 
-    for mode in range(8):
+    start_time = int(time.time())
 
-        if not privileges & 1:
+    for mode in range(8):
+        inactive_days = (start_time - user["latest_activity"]) / 60 / 60 / 24
+
+        if inactive_days > 60 or not privileges & 1:
             ranks = await db.fetch_one(
                 "SELECT `rank`, `country_rank` FROM `user_profile_history` WHERE `user_id` = :user_id AND `mode` = :mode ORDER BY `captured_at` DESC LIMIT 1",
                 {"user_id": user_id, "mode": mode},
@@ -160,7 +164,7 @@ async def async_main() -> int:
 
     start = timer()
     users = await db.fetch_all(
-        "SELECT id, privileges, country FROM users",
+        "SELECT id, privileges, country, latest_activity FROM users",
     )
     for user in users:
         await gather_profile_history(user)

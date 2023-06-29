@@ -38,6 +38,13 @@ async def get_profile_pp_history(
             status_code=200,
         )
 
+    if validation.is_not_active(user_data.latest_activity):
+        return responses.failure(
+            ServiceError.USERS_IS_NOT_ACTIVE,
+            "User is not active.",
+            status_code=200,
+        )
+
     # get current pp to create in real time pp history.
     current_pp_capture = await pp.fetch_current(ctx, user_id, mode)
 
