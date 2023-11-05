@@ -65,7 +65,7 @@ jobs:
 
       - name: Clear pending deployments
         run: |
-          kubectl get secret -lname=profile-history-service-production -lstatus=pending-upgrade -oname | xargs kubectl delete
+          kubectl get secret -lname=profile-history-service-production -lstatus=pending-upgrade -oname | xargs --no-run-if-empty kubectl delete
 
       - name: Show manifest diff since previous release
         run: |
