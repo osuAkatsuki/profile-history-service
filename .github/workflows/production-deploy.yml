@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - login-and-ssl-for-redis
 
 jobs:
   build:
