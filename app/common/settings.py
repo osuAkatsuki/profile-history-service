@@ -35,6 +35,6 @@ WRITE_DB_NAME = os.environ["WRITE_DB_NAME"]
 # redis
 REDIS_HOST = os.environ["REDIS_HOST"]
 REDIS_PORT = int(os.environ["REDIS_PORT"])
-REDIS_USER = os.environ["REDIS_USER"]
+REDIS_USER = os.getenv("REDIS_USER") or None
 REDIS_PASS = os.environ["REDIS_PASS"]
 REDIS_USE_SSL = read_bool(os.environ["REDIS_USE_SSL"])
