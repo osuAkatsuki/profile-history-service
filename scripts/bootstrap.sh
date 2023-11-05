@@ -19,7 +19,8 @@ if [[ $PULL_SECRETS_FROM_VAULT -eq 1 ]]; then
   echo "Installed akatsuki-cli"
 
   echo "Fetching secrets from vault"
-  akatsuki vault get profile-history-service $APP_ENV -o .env
+  # TODO: revert to $APP_ENV
+  akatsuki vault get profile-history-service production-k8s -o .env
   echo "Fetched secrets from vault"
   source .env
   echo "Sourced secrets from vault"
