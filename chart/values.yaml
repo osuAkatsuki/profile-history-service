@@ -1,11 +1,11 @@
 apps:
-  - name: score-service-api
+  - name: profile-history-service-api
     environment: production
-    codebase: score-service
+    codebase: profile-history-service
     replicaCount: 1
     container:
       image:
-        repository: osuakatsuki/score-service
+        repository: osuakatsuki/profile-history-service
         tag: latest
       port: 80
       env:

@@ -28,7 +28,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: osuAkatsuki/score-service
+          images: osuAkatsuki/profile-history-service
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -37,8 +37,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/score-service:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/score-service:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/profile-history-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/profile-history-service:${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Get kubeconfig from github secrets
@@ -68,7 +68,7 @@ jobs:
           helm diff upgrade \
           --allow-unreleased \
           --values chart/values.yaml \
-          score-service-production \
+          profile-history-service-production \
           common-helm-charts/microservice-base/
 
       - name: Deploy service to production cluster
@@ -78,5 +78,5 @@ jobs:
             --atomic \
             --wait --timeout 480s \
             --values chart/values.yaml \
-            score-service-production \
+            profile-history-service-production \
             common-helm-charts/microservice-base/
