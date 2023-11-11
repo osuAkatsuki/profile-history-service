@@ -72,6 +72,7 @@ jobs:
         run: |
           helm diff upgrade \
           --allow-unreleased \
+          --color=true \
           --values chart/values.yaml \
           profile-history-service-production \
           common-helm-charts/microservice-base/
