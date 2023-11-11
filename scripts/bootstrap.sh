@@ -34,7 +34,9 @@ fi
 /scripts/await-service.sh $REDIS_HOST $REDIS_PORT $SERVICE_READINESS_TIMEOUT
 
 if [[ $APP_COMPONENT == "api" ]]; then
-    exec /scripts/run-api.sh
+  exec /scripts/run-api.sh
+elif [[ $APP_COMPONENT == "crawler-cronjob" ]]; then
+  exec /scripts/run-crawler-cronjob.sh
 else
   echo "Unknown APP_COMPONENT: $APP_COMPONENT"
   exit 1
