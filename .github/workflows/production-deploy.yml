@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - horizontal-pod-autoscaling
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
