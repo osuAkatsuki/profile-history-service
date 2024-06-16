@@ -3,8 +3,9 @@ from __future__ import annotations
 import logging
 import time
 
-from fastapi import FastAPI, Response
+from fastapi import FastAPI
 from fastapi import Request
+from fastapi import Response
 from starlette.middleware.base import RequestResponseEndpoint
 
 from app.common import settings

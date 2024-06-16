@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Response
+from fastapi import APIRouter
 from fastapi import Depends
+from fastapi import Response
 
 from app.api.rest.context import RequestContext
 from app.common import responses

@@ -1,6 +1,6 @@
-mypy
+add-trailing-comma
 black
+mypy
 pyupgrade
 reorder-python-imports
-add-trailing-comma
 types-PyYAML
