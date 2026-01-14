@@ -51,10 +51,7 @@ async def get_profile_pp_history(
     # Only append live PP if there's no snapshot for today yet.
     # This avoids mixing data sources (MySQL live vs MySQL historical).
     today = datetime.date.today()
-    has_today_snapshot = (
-        data.captures
-        and data.captures[-1].captured_at.date() == today
-    )
+    has_today_snapshot = data.captures and data.captures[-1].captured_at.date() == today
 
     if not has_today_snapshot:
         current_pp_capture = await pp.fetch_current(ctx, user_id, mode)
