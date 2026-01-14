@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import datetime
+
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import Response
@@ -47,22 +49,25 @@ async def get_profile_rank_history(
             status_code=200,
         )
 
-    # get current rank to create in real time rank history.
-    current_rank_capture = await rank.fetch_current(
-        ctx,
-        user_id,
-        mode,
-        user_data.country,
+    # Only append live rank if there's no snapshot for today yet.
+    # This avoids mixing data sources (Redis live vs MySQL historical).
+    today = datetime.date.today()
+    has_today_snapshot = (
+        data.captures
+        and data.captures[-1].captured_at.date() == today
     )
 
-    if not current_rank_capture:
-        return responses.failure(
-            ServiceError.RANKS_NOT_FOUND,
-            "Failed to fetch newest rank capture.",
-            status_code=200,
+    if not has_today_snapshot:
+        current_rank_capture = await rank.fetch_current(
+            ctx,
+            user_id,
+            mode,
+            user_data.country,
         )
 
-    data.captures.append(current_rank_capture)
+        if current_rank_capture:
+            data.captures.append(current_rank_capture)
+
     return responses.success(data)
 
 
