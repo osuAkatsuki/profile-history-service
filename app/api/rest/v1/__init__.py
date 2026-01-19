@@ -5,7 +5,6 @@ from fastapi import APIRouter
 from . import pp
 from . import rank
 
-
 router = APIRouter(prefix="/api/v1/profile-history")
 
 router.include_router(rank.router, tags=["rank"])
