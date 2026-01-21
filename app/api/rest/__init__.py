@@ -102,6 +102,10 @@ def init_middlewares(api: FastAPI) -> None:
 def init_routes(api: FastAPI) -> None:
     from .v1 import router as v1_router
 
+    @api.get("/_health")
+    async def health_check() -> str:
+        return "ok"
+
     api.include_router(v1_router)
 
 
