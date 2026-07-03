@@ -12,7 +12,7 @@ spec:
         spec:
           containers:
           - name: profile-history-service-cron-production
-            image: osuakatsuki/profile-history-service:latest
+            image: ghcr.io/osuakatsuki/profile-history-service:latest
             imagePullPolicy: Always
             command:
               - ./scripts/bootstrap.sh

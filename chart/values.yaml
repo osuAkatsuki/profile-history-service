@@ -9,7 +9,7 @@ apps:
       targetCPUUtilizationPercentage: 80
     container:
       image:
-        repository: osuakatsuki/profile-history-service
+        repository: ghcr.io/osuakatsuki/profile-history-service
         tag: latest
       port: 80
       readinessProbe:
