@@ -36,7 +36,7 @@ redis_map = {
 
 
 async def fetch_rank(user_id: int, mode: int) -> int:
-    (redis_key, mode_name) = redis_map[mode]
+    redis_key, mode_name = redis_map[mode]
     current_rank: int = await redis.zrevrank(f"ripple:{redis_key}:{mode_name}", user_id)
 
     if current_rank is None:
@@ -48,7 +48,7 @@ async def fetch_rank(user_id: int, mode: int) -> int:
 
 
 async def fetch_c_rank(user_id: int, mode: int, country: str) -> int:
-    (redis_key, mode_name) = redis_map[mode]
+    redis_key, mode_name = redis_map[mode]
     current_rank: int = await redis.zrevrank(
         f"ripple:{redis_key}:{mode_name}:{country.lower()}",
         user_id,
